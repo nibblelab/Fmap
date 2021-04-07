@@ -21,6 +21,11 @@ module fmap
         type(c_ptr):: data
         integer(c_int):: size
     end type
+
+    type, bind(c):: c_string
+        type(c_ptr):: str
+        integer(c_int):: size
+    end type
     ! ------------------------
     
     ! ------------------------
@@ -33,6 +38,7 @@ module fmap
             procedure:: init
             procedure:: add
             procedure:: get
+            procedure:: getVarName
             procedure:: empty
             procedure:: exists
             procedure:: destroy
@@ -70,6 +76,16 @@ module fmap
             !Saida:
             type(c_vec):: val
         end function mapGet
+
+        function mapGetVarNameByIndex(map,i) result(val) bind(c,name="mapGetVarNameByIndex")
+            use iso_c_binding
+            import c_string
+            implicit none
+            !Entrada:
+            type(c_ptr), value:: map
+            integer(c_int), value:: i
+            type(c_string):: val
+        end function mapGetVarNameByIndex
 
         function mapIsEmpty(map) result(isit) bind(c,name="mapIsEmpty")
             use iso_c_binding
@@ -182,6 +198,43 @@ function get(this,key) result(val)
     call c_f_pointer(result%data, val, shape=[result%size])
 
 end function get
+! -----------------------------------------------------------------------------
+
+
+
+! ------------------------------------------------------------------------------
+! Insipired from amrex_string_c_to_f
+
+function string_c_to_f (cstr) result(fstr)
+    character(kind=c_char), intent(in) :: cstr(:)
+    character(len=size(cstr)-1) :: fstr
+    integer :: i, n
+    n = size(cstr)-1   ! skip the null character
+    fstr = ""
+    do i = 1, n
+       if (cstr(i) == c_null_char) exit
+       fstr(i:i) = cstr(i)
+    enddo
+  end function string_c_to_f
+
+! -----------------------------------------------------------------------------
+! Get a key from a fake index in mapping 
+function getVarName(this,indx) result(val)
+    implicit none
+    !Entrada:
+    class(dict), intent(inout):: this
+    integer(c_int), intent(in):: indx
+    !Saida:
+    character(len=:), allocatable:: val
+    !Local:
+    type(c_string):: result
+    character(kind=c_char), pointer :: cc(:)
+
+    result = mapGetVarNameByIndex(this%map,indx)
+    allocate(character(len=result%size-1)::val)
+    call c_f_pointer(result%str, cc, [result%size])
+    val = string_c_to_f(cc)
+end function getVarName
 ! -----------------------------------------------------------------------------
 
 ! -----------------------------------------------------------------------------

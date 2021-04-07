@@ -8,6 +8,8 @@
 // #############################################################################
 #include <unordered_map>
 #include <string>
+#include <cstring>
+
 using namespace std;
 
 #ifdef __cplusplus
@@ -21,10 +23,14 @@ typedef struct vec {
     int size;
 } vec;
 
+typedef struct c_string {
+    char* str;
+    int size;
+} c_string;
+
 // Initialize pointer by calling map contructor
 void mapInit(unordered_map<string,vec>*& mapping){
     mapping = new unordered_map<string,vec>();
-    return;
 }
 
 // Insert a value in the map using a key
@@ -41,10 +47,27 @@ void mapAdd(unordered_map<string,vec>* mapping, char* fkey, int n, double* data)
 }
 
 // Get a value from map using a key
-vec mapGet(unordered_map<string,vec>* mapping, char* fkey){
+vec mapGet(unordered_map<string,vec>* mapping, const char* fkey){
     // Convert char* to string
     string key(fkey);
-    return(mapping->find(key)->second);
+    return((*mapping)[key]);
+}
+
+c_string mapGetVarNameByIndex(unordered_map<string,vec>* mapping, int i) {
+    int indx = 0;
+    string key;
+    for ( auto it = mapping->begin(); it != mapping->end(); ++it ) {
+        if(indx == i) {
+            key = it->first;
+            break;
+        }
+        indx++;
+    }
+    c_string value;
+    value.size = key.size() + 1;
+    value.str = new char[value.size];
+    strncpy(value.str, key.c_str(), value.size);
+    return value;
 }
 
 // Check id map is empty

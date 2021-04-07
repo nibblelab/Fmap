@@ -10,9 +10,15 @@ program test
     use iso_c_binding
     use fmap
     implicit none
+    double precision:: a(3)
+    double precision:: b(3)
+    double precision:: c(3)
     double precision:: f(3)
     type(dict):: D
 
+    a = [1.d0,1.d0,1.d0]
+    b = [2.d0,2.d0,2.d0]
+    c = [3.d0,3.d0,3.d0]
     write(*,*)'Check if dictionary exists: ',D%exists()
     write(*,*)'Call init ...'
     call D%init()
@@ -31,6 +37,12 @@ program test
     f(2) = 15.d0
     write(*,*)'Retrieve same vector from map ...'
     write(*,*)D%get('mytag')
+    write(*,*)
+    call D%add('var_a',a)
+    call D%add('var_b',b)
+    call D%add('var_c',c)
+    write(*,*)'Get var by fake index on map ...'
+    write(*,*)D%getVarName(2)
     write(*,*)
     write(*,*)'Deallocating dictionary ...'
     call D%destroy()

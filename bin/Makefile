@@ -16,8 +16,8 @@ CC = g++
 # Flags
 W_flags = -Wall -Wextra -Werror
 Opt_flags = #-O3 -march=native -flto=8 -fno-fat-lto-objects -fno-strict-aliasing
-COMM_flags = -g
-FC_flags = -ffree-line-length-none -fcheck=all
+COMM_flags = -g 
+FC_flags = -ffree-line-length-none -fcheck=all 
 CC_flags =
 LFLAGS =  -lstdc++
 
