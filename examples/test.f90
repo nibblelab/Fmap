@@ -44,6 +44,9 @@ program test
     write(*,*)'Get var by fake index on map ...'
     write(*,*)D%getVarName(2)
     write(*,*)
+    write(*,*)'Get vector by fake index on map ...'
+    write(*,*)D%getByIndex(2)
+    write(*,*)
     write(*,*)'Deallocating dictionary ...'
     call D%destroy()
     write(*,*)'Check if dictionary exists: ',D%exists()

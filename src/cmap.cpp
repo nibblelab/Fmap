@@ -71,6 +71,22 @@ c_string mapGetVarNameByIndex(unordered_map<string,vec>* mapping, int i) {
     return value;
 }
 
+// Get a value from map using a fake index
+vec mapGetByIndex(unordered_map<string,vec>* mapping, int i) {
+    int indx = 0;
+    string key;
+    vec r;
+    for ( auto it = mapping->begin(); it != mapping->end(); ++it ) {
+        if(indx == i) {
+            key = it->first;
+            r = it->second;
+            break;
+        }
+        indx++;
+    }
+    return r;
+}
+
 // Check id map is empty
 bool mapIsEmpty(unordered_map<string,vec>* mapping){
     return(mapping->empty());

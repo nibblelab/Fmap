@@ -39,6 +39,7 @@ module fmap
             procedure:: add
             procedure:: get
             procedure:: getVarName
+            procedure:: getByIndex
             procedure:: empty
             procedure:: exists
             procedure:: destroy
@@ -86,6 +87,17 @@ module fmap
             integer(c_int), value:: i
             type(c_string):: val
         end function mapGetVarNameByIndex
+
+        function mapGetByIndex(map,i) result(val) bind(c,name="mapGetByIndex")
+            use iso_c_binding
+            import c_vec
+            implicit none
+            !Entrada:
+            type(c_ptr), value:: map
+            integer(c_int), value:: i
+            !Saida:
+            type(c_vec):: val
+        end function mapGetByIndex
 
         function mapIsEmpty(map) result(isit) bind(c,name="mapIsEmpty")
             use iso_c_binding
@@ -200,8 +212,6 @@ function get(this,key) result(val)
 end function get
 ! -----------------------------------------------------------------------------
 
-
-
 ! ------------------------------------------------------------------------------
 ! Insipired from amrex_string_c_to_f
 
@@ -235,6 +245,25 @@ function getVarName(this,indx) result(val)
     call c_f_pointer(result%str, cc, [result%size])
     val = string_c_to_f(cc)
 end function getVarName
+! -----------------------------------------------------------------------------
+
+! -----------------------------------------------------------------------------
+! Get a vector from a fake index in mapping 
+function getByIndex(this,indx) result(val)
+    implicit none
+    !Entrada:
+    class(dict), intent(inout):: this
+    integer(c_int), intent(in):: indx
+    !Saida:
+    real(c_double), pointer:: val(:)
+    !Local:
+    type(c_vec):: result
+
+    result = mapGetByIndex(this%map,indx)
+
+    call c_f_pointer(result%data, val, shape=[result%size])
+
+end function getByIndex
 ! -----------------------------------------------------------------------------
 
 ! -----------------------------------------------------------------------------
