@@ -5,7 +5,7 @@
 # Binary Files/Folders:
 *.mod
 *.o
-test
+bin/test
 # Hidden Files/Folders:
 *~
 .directory

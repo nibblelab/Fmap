@@ -53,6 +53,7 @@ vec mapGet(unordered_map<string,vec>* mapping, const char* fkey){
     return((*mapping)[key]);
 }
 
+// Get a key from map using a fake index
 c_string mapGetVarNameByIndex(unordered_map<string,vec>* mapping, int i) {
     int indx = 0;
     string key;
